@@ -1,0 +1,21 @@
+{
+  "name": "ld29-beneath-the-surface",
+  "version": "0.0.0",
+  "homepage": "https://github.com/esenti/ld29-beneath-the-surface",
+  "authors": [
+    "Krzysztof Skoracki <krzysztof@skoracki.net>"
+  ],
+  "description": "Ludum Dare 29",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "phaser": "~2.0.2"
+  }
+}
