@@ -3,8 +3,6 @@ class Player
         @sprite = window.game.add.sprite(50, 100, 'player')
         game.physics.enable(@sprite, Phaser.Physics.ARCADE)
         @sprite.body.collideWorldBounds = true
-        @sprite.angle = 45
-        @sprite.body.rotation = 45
 
     update: (delta) ->
         if @thrusting
@@ -31,6 +29,10 @@ class Player
 
         if window.down.isDown
             @sprite.body.velocity.y = 250
+
+        if @sprite.body.velocity.x and @sprite.body.velocity.y
+            @sprite.body.velocity.x /= Math.sqrt(2)
+            @sprite.body.velocity.y /= Math.sqrt(2)
 
         if window.action.isDown
             @thrusting =
