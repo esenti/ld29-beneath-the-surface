@@ -1,6 +1,6 @@
 
 preload = ->
-    window.game.load.image('p', 'p.png');
+    window.game.load.image('player', 'img/player.png');
 
 
 create = ->
@@ -10,41 +10,30 @@ create = ->
     window.game.physics.startSystem(Phaser.Physics.ARCADE)
     # game.physics.arcade.gravity.y = 100;
 
+    window.player = new Player(window.game)
 
+    window.enemies = []
 
-    window.platforms = game.add.group()
-    window.platforms.enableBody = true
-    p = window.platforms.create(100, 200, 'p')
-    p.body.immovable = true
-    p.scale.setTo(4, 1)
-
-
-    window.player = window.game.add.sprite(50, 100, 'p')
-    window.game.physics.enable(player, Phaser.Physics.ARCADE)
-    window.player.body.collideWorldBounds = true
-
-    window.player.body.gravity.y = 100
-
+    window.enemies.push(new Enemy(window.game))
 
     window.left = game.input.keyboard.addKey(Phaser.Keyboard.A)
     window.right = game.input.keyboard.addKey(Phaser.Keyboard.D)
     window.up = game.input.keyboard.addKey(Phaser.Keyboard.W)
+    window.down = game.input.keyboard.addKey(Phaser.Keyboard.S)
 
+    window.action = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
 
 update = ->
 
-    window.player.body.velocity.x = 0
+    window.player.update(window.game.time.elapsed)
 
-    if window.left.isDown
-        window.player.body.velocity.x = -100
+    for enemy in window.enemies
 
-    if window.right.isDown
-        window.player.body.velocity.x = 100
+        enemy.update(window.game.time.elapsed)
 
-    if window.up.isDown
-        window.player.body.velocity.y = -150
-
-    window.game.physics.arcade.collide(player, platforms)
-
+        window.game.physics.arcade.overlap(window.player.sprite, enemy.sprite, (player, enemy) ->
+            if window.player.thrusting
+                enemy.destroy()
+        )
 
 window.game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update })

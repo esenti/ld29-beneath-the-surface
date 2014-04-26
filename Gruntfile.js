@@ -4,10 +4,21 @@ module.exports = function(grunt) {
       compile: {
         files: {
           'js/main.js': 'src/*.coffee'
+        },
+        options: {
+          join: true
         }
       }
-    }
+    },
+
+    watch: {
+      scripts: {
+        files: ['src/*.coffee'],
+        tasks: ['coffee']
+      },
+    },
   });
 
   grunt.loadNpmTasks('grunt-contrib-coffee');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 };
