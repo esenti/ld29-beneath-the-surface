@@ -1,10 +1,12 @@
 class Player
     constructor: (game) ->
         @sprite = window.game.add.sprite(50, 100, 'player')
+        @sprite.animations.add('breath')
         game.physics.enable(@sprite, Phaser.Physics.ARCADE)
         @sprite.body.collideWorldBounds = true
 
     update: (delta) ->
+
         if @thrusting
             @sprite.body.velocity.x = @thrusting.x
             @sprite.body.velocity.y = @thrusting.y
@@ -14,6 +16,8 @@ class Player
                 @thrusting = undefined
 
             return
+
+        @sprite.animations.play('breath', 10, true)
 
         @sprite.body.velocity.x = 0
         @sprite.body.velocity.y = 0

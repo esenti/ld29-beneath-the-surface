@@ -1,6 +1,6 @@
 
 preload = ->
-    window.game.load.image('player', 'img/player.png');
+    window.game.load.spritesheet('player', 'img/player.png', 50, 50, 4);
     window.game.load.image('enemy', 'img/enemy.png');
     window.game.load.image('bullet', 'img/bullet.png');
 
