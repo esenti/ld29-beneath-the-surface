@@ -18,11 +18,13 @@ class Enemy
         @sound = game.add.audio('attack')
         @toThrust = 3000
         @dir = Phaser.Math.randomSign()
+        @unfucking = 0
 
     update: (delta) ->
         @sprite.animations.play('breath', 8, true)
         @toShoot -= delta
         @toThrust -= delta
+        @unfucking -= delta
 
         if @thrusting
             @sprite.body.velocity.x = @thrusting.x
@@ -64,8 +66,9 @@ class Enemy
             #     sprite.rotation = @game.physics.arcade.angleBetween(sprite, window.player.sprite)
             #     window.bullets.push(sprite)
         else
-            if @sprite.body.x < 50 or @sprite.body.x > 2700
+            if @sprite.body.x < 50 or @sprite.body.x > 2700 and @unfucking <= 0
                 @dir = -@dir
+                @unfucking = 5000
 
             @sprite.body.velocity.x = 50 * @dir
             @sprite.body.velocity.y = 0

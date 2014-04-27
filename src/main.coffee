@@ -14,7 +14,7 @@ gameState =
 
     create: ->
 
-        window.game.stage.backgroundColor = '#000020'
+        window.game.stage.backgroundColor = '#000000'
         window.game.world.setBounds(0, 0, 3000, 3000)
 
         window.collect = window.game.add.audio('collect')
@@ -104,7 +104,7 @@ gameState =
         #     )
 
         window.text.setText("#{Math.round(window.player.sprite.y / 10)}m")
-        window.hp.setText("#{window.player.maxHealth}")
+        window.hp.setText("#{window.player.maxHealth - 20}")
 
 
     render: ->
@@ -116,36 +116,72 @@ gameState =
         #     window.game.debug.body(enemy.sprite)
 
 
-menuState =
+class MenuState
+    preload: ->
+        window.game.load.spritesheet('player', 'assets/img/player.png', 500, 500, 4);
+        window.game.load.image('eye', 'assets/img/eye.png');
+
     create: ->
-        window.text = game.add.text(20, 20, "Continue", {
+        @sprite = window.game.add.sprite(window.w / 2 - 250, 70, 'player')
+        @sprite.animations.add('breath')
+        @leftEye = game.add.sprite(50, 90, 'eye')
+        @sprite.addChild(@leftEye)
+
+        @rightEye = game.add.sprite(270, 90, 'eye')
+        @sprite.addChild(@rightEye)
+
+
+        @title = game.add.text(window.w / 2, 50, "Game", {
+            font: "64px Visitor",
+            fill: "#ffffff",
+            align: "center"
+        });
+
+        @title.anchor.setTo(0.5, 0.5)
+
+        @ins = game.add.text(window.w / 2, 450, "W/A/S/D — move\nspace — attack", {
             font: "32px Visitor",
             fill: "#ffffff",
-            align: "left"
+            align: "center"
         });
 
-        window.action = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+        @ins.anchor.setTo(0.5, 0.5)
+
+        @text = game.add.text(window.w / 2, 550, "space to continue", {
+            font: "32px Visitor",
+            fill: "#ffffff",
+            align: "center"
+        });
+
+        @text.anchor.setTo(0.5, 0.5)
+
+        @action = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+
 
     update: ->
-        if window.action.justPressed()
+        if @action.justPressed()
             window.game.state.start('game')
 
-gameoverState =
+class GameoverState
     create: ->
-        window.text = game.add.text(20, 20, "Game over\n#{window.player.score}", {
+        @text = game.add.text(window.w / 2, 200, "Game over\nScore: #{window.player.score - 20}", {
             font: "42px Visitor",
             fill: "#ffffff",
-            align: "left"
+            align: "center"
         });
 
-        window.action = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+        @text.anchor.setTo(0.5, 0.5)
+
+        @action = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
 
     update: ->
-        if window.action.justPressed()
-            window.game.state.start('game')
+        if @action.justPressed()
+            window.game.state.start('menu')
 
-
-window.game = new Phaser.Game(Math.max(window.innerWidth, 800), Math.max(window.innerHeight, 600), Phaser.CANVAS, '', menuState)
-window.game.state.add('menu', menuState)
+m = new MenuState()
+window.w = Math.max(window.innerWidth, 800)
+window.h = Math.max(window.innerHeight, 600)
+window.game = new Phaser.Game(window.w, window.h, Phaser.CANVAS, '', m)
+window.game.state.add('menu', m)
 window.game.state.add('game', gameState)
-window.game.state.add('gameover', gameoverState)
+window.game.state.add('gameover', new GameoverState())
