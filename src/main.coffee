@@ -27,6 +27,11 @@ create = ->
     window.enemies.push(new Enemy(window.game, 300, 800, 50))
     window.enemies.push(new Enemy(window.game, 300, 1300, 100))
 
+    for y in [0..10]
+        for i in [0..10]
+
+            window.enemies.push(new Enemy(window.game, 300, 1300, 100))
+
     window.left = game.input.keyboard.addKey(Phaser.Keyboard.A)
     window.right = game.input.keyboard.addKey(Phaser.Keyboard.D)
     window.up = game.input.keyboard.addKey(Phaser.Keyboard.W)
