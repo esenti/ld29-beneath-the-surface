@@ -10,11 +10,17 @@ class Player
 
         @rightEye = game.add.sprite(27, 9, 'eye')
         @sprite.addChild(@rightEye)
+        @sound = game.add.audio('attack')
 
         @health = 100
-
+        @maxHealth = 100
+        @toThrust = 1000
 
     update: (delta) ->
+        @toThrust -= delta
+
+        @sprite.scale.x = @maxHealth / 100
+        @sprite.scale.y = @maxHealth / 100
 
         if @thrusting
             @sprite.body.velocity.x = @thrusting.x
@@ -47,16 +53,18 @@ class Player
             @sprite.body.velocity.x /= Math.sqrt(2)
             @sprite.body.velocity.y /= Math.sqrt(2)
 
-        if window.action.isDown
+        if window.action.isDown and @toThrust <= 0
+            @sound.play()
+            @toThrust = 1000
             @thrusting =
                 x: @sprite.body.velocity.x * 4
                 y: @sprite.body.velocity.y * 4
                 time: 200
 
-        if @health < 100
+        if @health < @maxHealth
             @health += delta * 0.002
 
-        healthNormalized = Math.round((@health / 100.0) * 255)
+        healthNormalized = Math.round((@health / @maxHealth) * 255)
         tint = healthNormalized << 16 | healthNormalized << 8 | healthNormalized
         @leftEye.tint = tint
         @rightEye.tint = tint

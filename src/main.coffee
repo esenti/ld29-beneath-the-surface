@@ -4,12 +4,13 @@ preload = ->
     window.game.load.image('enemy', 'img/enemy.png');
     window.game.load.image('bullet', 'img/bullet.png');
     window.game.load.image('eye', 'img/eye.png');
-
+    window.game.load.image('glow', 'img/glow.png');
+    window.game.load.audio('attack', 'sound/attack.wav');
 
 create = ->
 
-    window.game.stage.backgroundColor = '#00054b'
-    window.game.world.setBounds(0, 0, 1400, 1400)
+    window.game.stage.backgroundColor = '#000020'
+    window.game.world.setBounds(0, 0, 3000, 3000)
 
     window.game.physics.startSystem(Phaser.Physics.ARCADE)
     # game.physics.arcade.gravity.y = 100;
@@ -20,8 +21,11 @@ create = ->
     window.enemies = []
     window.bullets = []
 
-    window.enemies.push(new Enemy(window.game, 200, 100))
-    window.enemies.push(new Enemy(window.game, 300, 300))
+    window.enemies.push(new Enemy(window.game, 200, 100, 100))
+    window.enemies.push(new Enemy(window.game, 300, 300, 200))
+    window.enemies.push(new Enemy(window.game, 300, 500, 150))
+    window.enemies.push(new Enemy(window.game, 300, 800, 50))
+    window.enemies.push(new Enemy(window.game, 300, 1300, 100))
 
     window.left = game.input.keyboard.addKey(Phaser.Keyboard.A)
     window.right = game.input.keyboard.addKey(Phaser.Keyboard.D)
@@ -32,15 +36,27 @@ create = ->
 
 
     window.text = game.add.text(20, 20, "", {
-        font: "32px Arial",
-        fill: "#ff0044",
-        align: "center"
+        font: "32px Visitor",
+        fill: "#ffffff",
+        align: "left"
     });
 
     window.text.fixedToCamera = true
 
+    window.hp = game.add.text(20, 50, "", {
+        font: "32px Visitor",
+        fill: "#ffffff",
+        align: "left"
+    });
+
+    window.hp.fixedToCamera = true
+
 
 update = ->
+
+    if window.player.health <= 0
+        console.log 'died'
+        return
 
     window.player.update(window.game.time.elapsed)
 
@@ -51,7 +67,10 @@ update = ->
 
         window.game.physics.arcade.overlap(window.player.sprite, window.enemies[i].sprite, (player, enemy) ->
             if window.player.thrusting
+                window.enemies.push(new Enemy(window.game, enemy.x + 500, enemy.y))
                 enemy.destroy()
+                window.player.maxHealth += 1
+                window.player.health += 1
                 window.enemies.splice(i, 1)
                 i -= 1
         )
@@ -61,11 +80,12 @@ update = ->
 
     for bullet in window.bullets
         window.game.physics.arcade.overlap(window.player.sprite, bullet, (player, bullet) ->
-            window.player.health -= 5
+            window.player.health -= 10
             bullet.destroy()
         )
 
-    window.text.setText(window.player.sprite.y)
+    window.text.setText("#{Math.round(window.player.sprite.y / 10)}m")
+    window.hp.setText("#{Math.round(window.player.health)}/#{window.player.maxHealth}")
 
 
 render = ->
