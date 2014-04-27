@@ -15,7 +15,7 @@ gameState =
     create: ->
 
         window.game.stage.backgroundColor = '#000000'
-        window.game.world.setBounds(0, 0, 3000, 3000)
+        window.game.world.setBounds(0, 0, 3000, 5000)
 
         window.collect = window.game.add.audio('collect')
         window.hurt = window.game.add.audio('hurt')
@@ -30,7 +30,7 @@ gameState =
         window.bullets = []
 
         for y in [0..25]
-            for i in [0..8]
+            for i in [0..9 - Phaser.Math.clampBottom(Math.floor(y / 10) , 0)]
                 sh = rand(-40, 40)
                 sh2 = rand(-10, 10)
                 window.enemies.push(new Enemy(window.game, rand(0, 3000), y * 200 + sh, y * 10 + 30 + sh2))
@@ -131,7 +131,7 @@ class MenuState
         @sprite.addChild(@rightEye)
 
 
-        @title = game.add.text(window.w / 2, 50, "Game", {
+        @title = game.add.text(window.w / 2, 50, "See", {
             font: "64px Visitor",
             fill: "#ffffff",
             align: "center"
