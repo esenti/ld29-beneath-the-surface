@@ -54,7 +54,7 @@ create = ->
 
 update = ->
 
-    if window.player.health <= 0
+    if window.player.maxHealth <= 0
         console.log 'died'
         return
 
@@ -66,8 +66,10 @@ update = ->
         window.enemies[i].update(window.game.time.elapsed)
 
         window.game.physics.arcade.overlap(window.player.sprite, window.enemies[i].sprite, (player, enemy) ->
-            if window.player.thrusting
-                window.enemies.push(new Enemy(window.game, enemy.x + 500, enemy.y))
+            if window.player.maxHealth < window.enemies[i].maxHealth
+                window.player.maxHealth -= 1
+            else if window.player.thrusting
+                window.enemies.push(new Enemy(window.game, enemy.x + 500, enemy.y, 100))
                 enemy.destroy()
                 window.player.maxHealth += 1
                 window.player.health += 1
@@ -78,20 +80,31 @@ update = ->
         i += 1
 
 
-    for bullet in window.bullets
-        window.game.physics.arcade.overlap(window.player.sprite, bullet, (player, bullet) ->
-            window.player.health -= 10
-            bullet.destroy()
-        )
+    for enemy1 in window.enemies
+        for enemy2 in window.enemies
+            if enemy1 != enemy2
+                window.game.physics.arcade.collide(enemy1.sprite, enemy2.sprite)
+
+
+    # for bullet in window.bullets
+    #     window.game.physics.arcade.overlap(window.player.sprite, bullet, (player, bullet) ->
+    #         window.player.health -= 10
+    #         bullet.destroy()
+    #     )
 
     window.text.setText("#{Math.round(window.player.sprite.y / 10)}m")
-    window.hp.setText("#{Math.round(window.player.health)}/#{window.player.maxHealth}")
+    window.hp.setText("#{window.player.maxHealth}")
 
 
 render = ->
 
+    # window.game.debug.body(window.player.sprite)
 
-window.game = new Phaser.Game(Math.max(window.innerWidth, 800), Math.max(window.innerHeight, 600), Phaser.AUTO, '', {
+    # for enemy in window.enemies
+
+    #     window.game.debug.body(enemy.sprite)
+
+window.game = new Phaser.Game(Math.max(window.innerWidth, 800), Math.max(window.innerHeight, 600), Phaser.CANVAS, '', {
     preload: preload,
     create: create,
     update: update,

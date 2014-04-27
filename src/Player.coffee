@@ -1,6 +1,6 @@
 class Player
     constructor: (game) ->
-        @sprite = window.game.add.sprite(50, 100, 'player')
+        @sprite = window.game.add.sprite(500, 300, 'player')
         @sprite.animations.add('breath')
         game.physics.enable(@sprite, Phaser.Physics.ARCADE)
         @sprite.body.collideWorldBounds = true
@@ -13,7 +13,7 @@ class Player
         @sound = game.add.audio('attack')
 
         @health = 100
-        @maxHealth = 100
+        @maxHealth = 50
         @toThrust = 1000
 
     update: (delta) ->
@@ -64,7 +64,7 @@ class Player
         if @health < @maxHealth
             @health += delta * 0.002
 
-        healthNormalized = Math.round((@health / @maxHealth) * 255)
-        tint = healthNormalized << 16 | healthNormalized << 8 | healthNormalized
-        @leftEye.tint = tint
-        @rightEye.tint = tint
+        # healthNormalized = Math.round((@health / @maxHealth) * 255)
+        # tint = healthNormalized << 16 | healthNormalized << 8 | healthNormalized
+        # @leftEye.tint = tint
+        # @rightEye.tint = tint

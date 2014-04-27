@@ -15,7 +15,7 @@ class Enemy
         @sprite.scale.y = @maxHealth / 100
 
         @sound = game.add.audio('attack')
-        @toThrust = 1000
+        @toThrust = 3000
 
     update: (delta) ->
         @toShoot -= delta
@@ -33,9 +33,7 @@ class Enemy
 
         distance = Phaser.Math.distance(@sprite.x, @sprite.y, window.player.sprite.x, window.player.sprite.y)
 
-        if distance < 400
-
-            if distance < 200 and @toThrust <= 0 and window.player.maxHealth < @maxHealth
+        if distance < 400 and @toThrust <= 0 and window.player.maxHealth < @maxHealth
                 toPlayer = new Phaser.Point(window.player.sprite.x, window.player.sprite.y)
                 toPlayer.subtract(@sprite.x, @sprite.y)
                 toPlayer.normalize()
@@ -44,11 +42,11 @@ class Enemy
                 # @sprite.body.velocity.y = -toPlayer.y * 50
 
                 @sound.play()
-                @toThrust = 1000
+                @toThrust = 3000
                 @thrusting =
-                    x: toPlayer.x * 150
-                    y: toPlayer.y * 150
-                    time: 300
+                    x: toPlayer.x * 250
+                    y: toPlayer.y * 250
+                    time: 1000
 
             # else
             #     @sprite.body.velocity.x = 0
@@ -65,3 +63,7 @@ class Enemy
         else
             @sprite.body.velocity.x = 50
             @sprite.body.velocity.y = 50
+
+        tint = if @maxHealth > window.player.maxHealth then 0xff0000 else 0x0000ffff
+        @leftEye.tint = tint
+        @rightEye.tint = tint
