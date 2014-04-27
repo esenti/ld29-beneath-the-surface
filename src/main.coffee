@@ -78,7 +78,8 @@ gameState =
                     window.hurt.play()
                 else if window.player.thrusting
                     window.collect.play()
-                    window.enemies.push(new Enemy(window.game, enemy.x + 1000, enemy.y, window.enemies[i].maxHealth + 10))
+                    x = if enemy.x > 1500 then enemy.x - 1000 else enemy.x + 1000
+                    window.enemies.push(new Enemy(window.game, x, enemy.y, window.enemies[i].maxHealth + 10))
                     enemy.destroy()
                     window.player.maxHealth += 1
                     window.player.health += 1
