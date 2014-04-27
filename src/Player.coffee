@@ -5,6 +5,15 @@ class Player
         game.physics.enable(@sprite, Phaser.Physics.ARCADE)
         @sprite.body.collideWorldBounds = true
 
+        @leftEye = game.add.sprite(5, 9, 'eye')
+        @sprite.addChild(@leftEye)
+
+        @rightEye = game.add.sprite(27, 9, 'eye')
+        @sprite.addChild(@rightEye)
+
+        @health = 100
+
+
     update: (delta) ->
 
         if @thrusting
@@ -17,7 +26,7 @@ class Player
 
             return
 
-        @sprite.animations.play('breath', 10, true)
+        @sprite.animations.play('breath', 8, true)
 
         @sprite.body.velocity.x = 0
         @sprite.body.velocity.y = 0
@@ -43,3 +52,11 @@ class Player
                 x: @sprite.body.velocity.x * 4
                 y: @sprite.body.velocity.y * 4
                 time: 200
+
+        if @health < 100
+            @health += delta * 0.002
+
+        healthNormalized = Math.round((@health / 100.0) * 255)
+        tint = healthNormalized << 16 | healthNormalized << 8 | healthNormalized
+        @leftEye.tint = tint
+        @rightEye.tint = tint
