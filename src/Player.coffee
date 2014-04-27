@@ -53,7 +53,7 @@ class Player
             @sprite.body.velocity.x /= Math.sqrt(2)
             @sprite.body.velocity.y /= Math.sqrt(2)
 
-        if window.action.isDown and @toThrust <= 0
+        if window.action.isDown# and @toThrust <= 0
             @sound.play()
             @toThrust = 1000
             @thrusting =

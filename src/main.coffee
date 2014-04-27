@@ -1,3 +1,5 @@
+rand = (min, max) ->
+    Math.random() * (max - min) + min
 
 preload = ->
     window.game.load.spritesheet('player', 'img/player.png', 50, 50, 4);
@@ -6,11 +8,16 @@ preload = ->
     window.game.load.image('eye', 'img/eye.png');
     window.game.load.image('glow', 'img/glow.png');
     window.game.load.audio('attack', 'sound/attack.wav');
+    window.game.load.audio('collect', 'sound/collect.wav');
+    window.game.load.audio('hurt', 'sound/hurt.wav');
 
 create = ->
 
     window.game.stage.backgroundColor = '#000020'
     window.game.world.setBounds(0, 0, 3000, 3000)
+
+    window.collect = window.game.add.audio('collect')
+    window.hurt = window.game.add.audio('hurt')
 
     window.game.physics.startSystem(Phaser.Physics.ARCADE)
     # game.physics.arcade.gravity.y = 100;
@@ -21,16 +28,11 @@ create = ->
     window.enemies = []
     window.bullets = []
 
-    window.enemies.push(new Enemy(window.game, 200, 100, 100))
-    window.enemies.push(new Enemy(window.game, 300, 300, 200))
-    window.enemies.push(new Enemy(window.game, 300, 500, 150))
-    window.enemies.push(new Enemy(window.game, 300, 800, 50))
-    window.enemies.push(new Enemy(window.game, 300, 1300, 100))
-
-    for y in [0..10]
-        for i in [0..10]
-
-            window.enemies.push(new Enemy(window.game, 300, 1300, 100))
+    for y in [0..25]
+        for i in [0..8]
+            sh = rand(-40, 40)
+            sh2 = rand(-10, 10)
+            window.enemies.push(new Enemy(window.game, rand(0, 3000), y * 200 + sh, y * 10 + 30 + sh2))
 
     window.left = game.input.keyboard.addKey(Phaser.Keyboard.A)
     window.right = game.input.keyboard.addKey(Phaser.Keyboard.D)
@@ -59,7 +61,7 @@ create = ->
 
 update = ->
 
-    if window.player.maxHealth <= 0
+    if window.player.maxHealth <= 20
         console.log 'died'
         return
 
@@ -73,8 +75,10 @@ update = ->
         window.game.physics.arcade.overlap(window.player.sprite, window.enemies[i].sprite, (player, enemy) ->
             if window.player.maxHealth < window.enemies[i].maxHealth
                 window.player.maxHealth -= 1
+                window.hurt.play()
             else if window.player.thrusting
-                window.enemies.push(new Enemy(window.game, enemy.x + 500, enemy.y, 100))
+                window.collect.play()
+                window.enemies.push(new Enemy(window.game, enemy.x + 1000, enemy.y, window.enemies[i].maxHealth + 10))
                 enemy.destroy()
                 window.player.maxHealth += 1
                 window.player.health += 1
@@ -85,10 +89,10 @@ update = ->
         i += 1
 
 
-    for enemy1 in window.enemies
-        for enemy2 in window.enemies
-            if enemy1 != enemy2
-                window.game.physics.arcade.collide(enemy1.sprite, enemy2.sprite)
+    # for enemy1 in window.enemies
+    #     for enemy2 in window.enemies
+    #         if enemy1 != enemy2
+    #             window.game.physics.arcade.collide(enemy1.sprite, enemy2.sprite)
 
 
     # for bullet in window.bullets

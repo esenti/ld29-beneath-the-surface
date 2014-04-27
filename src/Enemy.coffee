@@ -16,6 +16,7 @@ class Enemy
 
         @sound = game.add.audio('attack')
         @toThrust = 3000
+        @dir = Phaser.Math.randomSign()
 
     update: (delta) ->
         @toShoot -= delta
@@ -33,7 +34,7 @@ class Enemy
 
         distance = Phaser.Math.distance(@sprite.x, @sprite.y, window.player.sprite.x, window.player.sprite.y)
 
-        if distance < 400 and @toThrust <= 0 and window.player.maxHealth < @maxHealth
+        if distance < 200 and @toThrust <= 0 and window.player.maxHealth < @maxHealth and Phaser.Math.chanceRoll(5)
                 toPlayer = new Phaser.Point(window.player.sprite.x, window.player.sprite.y)
                 toPlayer.subtract(@sprite.x, @sprite.y)
                 toPlayer.normalize()
@@ -61,8 +62,14 @@ class Enemy
             #     sprite.rotation = @game.physics.arcade.angleBetween(sprite, window.player.sprite)
             #     window.bullets.push(sprite)
         else
-            @sprite.body.velocity.x = 50
-            @sprite.body.velocity.y = 50
+            if @sprite.body.x < 50 or @sprite.body.x > 2950
+                @dir = -@dir
+
+            @sprite.body.velocity.x = 50 * @dir
+            @sprite.body.velocity.y = 0
+
+        if Phaser.Math.chanceRoll(1)
+            @maxHealth += 1
 
         tint = if @maxHealth > window.player.maxHealth then 0xff0000 else 0x0000ffff
         @leftEye.tint = tint
