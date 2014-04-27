@@ -1,24 +1,26 @@
 class Enemy
     constructor: (@game, x, y, @maxHealth) ->
         @sprite = @game.add.sprite(x, y, 'player')
+        @sprite.animations.add('breath')
         @game.physics.enable(@sprite, Phaser.Physics.ARCADE)
         @toShoot = 1000
         @sprite.body.collideWorldBounds = true
 
-        @leftEye = game.add.sprite(5, 9, 'eye')
+        @leftEye = game.add.sprite(50, 90, 'eye')
         @sprite.addChild(@leftEye)
 
-        @rightEye = game.add.sprite(27, 9, 'eye')
+        @rightEye = game.add.sprite(270, 90, 'eye')
         @sprite.addChild(@rightEye)
 
-        @sprite.scale.x = @maxHealth / 100
-        @sprite.scale.y = @maxHealth / 100
+        @sprite.scale.x = @maxHealth / 1000
+        @sprite.scale.y = @maxHealth / 1000
 
         @sound = game.add.audio('attack')
         @toThrust = 3000
         @dir = Phaser.Math.randomSign()
 
     update: (delta) ->
+        @sprite.animations.play('breath', 8, true)
         @toShoot -= delta
         @toThrust -= delta
 
@@ -62,7 +64,7 @@ class Enemy
             #     sprite.rotation = @game.physics.arcade.angleBetween(sprite, window.player.sprite)
             #     window.bullets.push(sprite)
         else
-            if @sprite.body.x < 50 or @sprite.body.x > 2950
+            if @sprite.body.x < 50 or @sprite.body.x > 2700
                 @dir = -@dir
 
             @sprite.body.velocity.x = 50 * @dir
@@ -70,6 +72,8 @@ class Enemy
 
         if Phaser.Math.chanceRoll(1)
             @maxHealth += 1
+            @sprite.scale.x = @maxHealth / 1000
+            @sprite.scale.y = @maxHealth / 1000
 
         tint = if @maxHealth > window.player.maxHealth then 0xff0000 else 0x0000ffff
         @leftEye.tint = tint

@@ -5,22 +5,23 @@ class Player
         game.physics.enable(@sprite, Phaser.Physics.ARCADE)
         @sprite.body.collideWorldBounds = true
 
-        @leftEye = game.add.sprite(5, 9, 'eye')
+        @leftEye = game.add.sprite(50, 90, 'eye')
         @sprite.addChild(@leftEye)
 
-        @rightEye = game.add.sprite(27, 9, 'eye')
+        @rightEye = game.add.sprite(270, 90, 'eye')
         @sprite.addChild(@rightEye)
         @sound = game.add.audio('attack')
 
         @health = 100
         @maxHealth = 50
         @toThrust = 1000
+        @score = @maxHealth
 
     update: (delta) ->
         @toThrust -= delta
 
-        @sprite.scale.x = @maxHealth / 100
-        @sprite.scale.y = @maxHealth / 100
+        @sprite.scale.x = @maxHealth / 1000
+        @sprite.scale.y = @maxHealth / 1000
 
         if @thrusting
             @sprite.body.velocity.x = @thrusting.x
